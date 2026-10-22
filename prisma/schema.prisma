@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("STAFF") // "OWNER" or "STAFF"
+  createdAt    DateTime @default(now())
+}
+
+model MenuItem {
+  id                  String   @id @default(cuid())
+  name                String
+  category            String   // "Loaded Tea" | "Specialty Tea" | "Coffee" | "Shakes" | "Dirty Soda" | "Dirty Alani"
+  ingredients         String
+  description         String?
+  featured            Boolean  @default(false)
+  inStock             Boolean  @default(true)
+  // Future Online Ordering Fields
+  price               Float    @default(6.50)
+  sizes               String   @default("24oz, 32oz")
+  customizationAddons String?  // e.g. "Extra Boost (+$1.00), Cold Foam (+$1.00), Whipped Cream"
+  orderableOnline     Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model StoreSettings {
+  id                    String   @id @default("default")
+  onlineOrderingEnabled Boolean  @default(false)
+  phone                 String   @default("(423) 555-0199")
+  address               String   @default("851 W Elk Ave, Elizabethton, TN 37643")
+  hours                 String   @default("Mon–Fri: 6:30 AM – 5:00 PM | Sat: 8:00 AM – 3:00 PM | Sun: Closed")
+  announcement          String   @default("Stop by 851 W Elk Ave for your daily Loaded Tea, Protein Shake, or Dirty Alani!")
+  updatedAt             DateTime @updatedAt
+}
